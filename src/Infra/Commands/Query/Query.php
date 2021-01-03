@@ -13,51 +13,38 @@ class Query
     }
 
     /**
-     * @param string|array $data
+     * @param null $data
      * @param null $values
      * @return Select
-     * @throws QueryArgumentNull
      */
     public function find($data = null, $values = null): Select
     {
-        $this->validateFindParams($data, $values);
+        $operator = new Select($this->table);
 
-        $operator = new Select($this->table, $data, $values);
-
-        if (is_string($data)) {
-            $data = [
-                [$data, $values]
-            ];
-        }
-
-        return $operator->setData($data);
-    }
-
-    public function update(array $data): Update
-    {
-        $operator = new Update($this->table, $data);
-        return $operator;
-    }
-
-    public function delete(string $column, $value): Delete
-    {
-        $operator = new Delete($this->table, $column, $value);
-        return $operator;
+        return $operator->setData($data, $values);
     }
 
     /**
      * @param null $data
      * @param null $values
-     * @throws QueryArgumentNull
+     * @return Update
      */
-    private function validateFindParams($data = null, $values = null): void
+    public function update($data = null, $values = null): Update
     {
-        if ($data === null) {
-            throw new QueryArgumentNull("You must pass the column name to `find` method.");
-        }
+        $operator = new Update($this->table);
 
-        if (is_string($data) && $values === null) {
-            throw new QueryArgumentNull("You must pass value to `find` method before try find some values.");
-        }
+        return $operator->setData($data, $values);
+    }
+
+    /**
+     * @param null $data
+     * @param null $values
+     * @return Delete
+     */
+    public function delete($data = null, $values = null): Delete
+    {
+        $operator = new Delete($this->table);
+
+        return $operator->setData($data, $values);
     }
 }

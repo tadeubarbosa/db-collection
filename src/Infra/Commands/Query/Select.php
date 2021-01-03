@@ -6,7 +6,6 @@ use InvalidArgumentException;
 
 class Select extends SelectBase implements QueryOperator
 {
-
     public function __toString(): string
     {
         $columns = $this->getColumns();
