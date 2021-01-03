@@ -2,7 +2,7 @@
 
 namespace DBCollection\Infra\Commands\Query;
 
-use bar\baz\source_with_namespace;
+use Closure;
 use InvalidArgumentException;
 
 class Select implements QueryOperator
@@ -128,7 +128,7 @@ class Select implements QueryOperator
         return $response;
     }
 
-    private function manipulateDataValues(): \Closure
+    private function manipulateDataValues(): Closure
     {
         return static function(array $params) {
             $name = "";
@@ -149,9 +149,9 @@ class Select implements QueryOperator
     }
 
     /**
-     * @return \Closure
+     * @return Closure
      */
-    private function filterDataBeforeSet(): \Closure
+    private function filterDataBeforeSet(): Closure
     {
         return static function ($params) {
             if (is_string($params)) {
