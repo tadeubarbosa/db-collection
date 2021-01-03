@@ -12,7 +12,7 @@ trait QueryData
     /** @var array */
     private $data;
 
-    protected function setData($data = null, $values = null): self
+    public function setData($data = null, $values = null): self
     {
         $this->validateFindParams($data, $values);
 
@@ -36,7 +36,7 @@ trait QueryData
         return $this;
     }
 
-    protected function data(): array
+    public function data(): array
     {
         if (count($this->data) === 0) {
             return [];
