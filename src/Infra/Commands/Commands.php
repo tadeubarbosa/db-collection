@@ -2,6 +2,8 @@
 
 namespace DBCollection\Infra;
 
+use DBCollection\Infra\Commands\Query\Query;
+
 class Commands
 {
     /** @var string */

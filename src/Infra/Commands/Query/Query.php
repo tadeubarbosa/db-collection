@@ -1,11 +1,6 @@
 <?php
 
-namespace DBCollection\Infra\Commands;
-
-use DBCollection\Infra\Commands\Query\Delete;
-use DBCollection\Infra\Commands\Query\QueryArgumentNull;
-use DBCollection\Infra\Commands\Query\Select;
-use DBCollection\Infra\Commands\Query\Update;
+namespace DBCollection\Infra\Commands\Query;
 
 class Query
 {

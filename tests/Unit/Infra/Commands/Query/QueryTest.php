@@ -1,8 +1,8 @@
 <?php
 
-namespace DBCollection\Tests\Infra\Commands;
+namespace DBCollection\Tests\Infra\Commands\Query;
 
-use DBCollection\Infra\Commands\Query;
+use DBCollection\Infra\Commands\Query\Query;
 use DBCollection\Infra\Commands\Query\QueryArgumentNull;
 use PHPUnit\Framework\TestCase;
 

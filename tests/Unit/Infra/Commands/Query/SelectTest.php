@@ -1,6 +1,6 @@
 <?php
 
-namespace DBCollection\Tests\Infra\Commands\Query;
+namespace DBCollection\Tests\Unit\Infra\Commands\Query;
 
 use DBCollection\Infra\Commands\Query\Select;
 use InvalidArgumentException;
@@ -8,68 +8,62 @@ use PHPUnit\Framework\TestCase;
 
 class SelectTest extends TestCase
 {
+    /** @var Select */
+    private static $select;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        self::$select = new Select("table");
+    }
+
     public function testCanMountWithoutData(): void
     {
-        $select = new Select("table");
-
-        self::assertEquals("SELECT * FROM `table`;", (string) $select);
+        self::assertEquals("SELECT * FROM `table`;", (string) self::$select);
     }
 
     public function testCanReceiveOnlySomeColumns(): void
     {
-        $select = new Select("table");
-        $select->columns("id");
+        self::$select->columns("id");
 
-        self::assertEquals("SELECT id FROM `table`;", (string) $select);
+        self::assertEquals("SELECT id FROM `table`;", (string) self::$select);
     }
 
     public function testThrowsAnExceptionWhenReceiveAnEmptyColumn(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $select = new Select("table");
-        $select->columns("");
+        self::$select->columns("");
     }
 
     public function testCanReceiveAnArrayOfColumns(): void
     {
-        $select = new Select("table");
         $columns = ["id", "name"];
-        $select->columns($columns);
+        self::$select->columns($columns);
 
-        self::assertEquals("SELECT id,name FROM `table`;", (string) $select);
+        self::assertEquals("SELECT id,name FROM `table`;", (string) self::$select);
     }
 
     public function testReturnsAnExceptionWhenReceiveAnEmptyArray(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $select = new Select("table");
-        $select->columns([]);
+        self::$select->columns([]);
     }
 
     public function testCanMountCountOperator(): void
     {
-        $select = new Select("table");
-        $select->count();
+        self::$select->count();
 
-        self::assertEquals("SELECT COUNT(*) FROM `table`;", (string) $select);
+        self::assertEquals("SELECT COUNT(*) FROM `table`;", (string) self::$select);
     }
 
     public function testCanMountCountOperatorWithColumnValue(): void
     {
-        $select = new Select("table");
-        $select->count("id");
+        self::$select->count("id");
 
-        self::assertEquals("SELECT COUNT(id) FROM `table`;", (string) $select);
-    }
-
-    public function testThrowsWhenPassAnEmptyData(): void
-    {
-        self::expectException(InvalidArgumentException::class);
-
-        $select = new Select("table");
-        $select->setData([]);
+        self::assertEquals("SELECT COUNT(id) FROM `table`;", (string) self::$select);
     }
 
     /**
@@ -79,35 +73,47 @@ class SelectTest extends TestCase
      */
     public function testCanReceiveDataValues(array $data, string $expected): void
     {
-        $select = new Select("table");
-        $select->setData($data);
+        self::$select->setData($data);
 
-        self::assertEquals($expected, (string) $select);
+        self::assertEquals($expected, (string) self::$select);
     }
 
     /**
      * @dataProvider dataOfInvalidValues
+     * @param array $data
      */
     public function testThrowsAnExceptionWhenPassAInvalidNumberOfArguments(array $data): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $select = new Select("table");
-        $select->setData($data);
+        self::$select->setData($data);
+    }
+
+    /**
+     * @dataProvider limitValues
+     * @param int|null $initial
+     * @param int|null $end
+     * @param string|null $expected
+     */
+    public function testCanPassLimitAttribute(int $initial = null, int $end = null, string $expected = null): void
+    {
+        if ($end && $initial !== null) {
+            self::$select->limit($initial, $end);
+            self::assertEquals($expected, (string) self::$select);
+            return;
+        }
+
+        self::$select->limit($end);
+        self::assertEquals($expected, (string) self::$select);
     }
 
     public function testGetValidatedData(): void
     {
-        $select = new Select("table");
-        $data = [
-            ["id", 1]
-        ];
-        $select->setData($data);
+        $data = [["id", 1]];
+        self::$select->setData($data);
 
-        $expected = [
-            [":id", 1]
-        ];
-        self::assertEquals($expected, $select->data());
+        $expected = [[":id", 1]];
+        self::assertEquals($expected, self::$select->data());
     }
 
     public function dataValues(): array
@@ -140,6 +146,14 @@ class SelectTest extends TestCase
             "with-incorrect-like" => [
                 [["name", "like"]]
             ],
+        ];
+    }
+
+    public function limitValues(): array
+    {
+        return [
+            [null, 10, "SELECT * FROM `table` LIMIT 0,10;"],
+            [5, 10, "SELECT * FROM `table` LIMIT 5,10;"],
         ];
     }
 }
