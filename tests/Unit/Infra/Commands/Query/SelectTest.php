@@ -116,6 +116,33 @@ class SelectTest extends TestCase
         self::assertEquals($expected, self::$select->data());
     }
 
+    public function testCanMountWhereValues(): void
+    {
+        self::$select->where("id", 1);
+
+        self::assertEquals("SELECT * FROM `table` WHERE id = :id;", (string) self::$select);
+    }
+
+    public function testCanMountManyWhereValues(): void
+    {
+        self::$select
+            ->where("id", 1)
+            ->where("name", "Jhon Doe");
+
+        self::assertEquals("SELECT * FROM `table` WHERE id = :id AND name = :name;", (string) self::$select);
+    }
+
+    public function testCanMountArrayOfWhereValues(): void
+    {
+        $data = [
+            ["id", 1],
+            ["email", "like", "email@email.com"],
+        ];
+        self::$select->where($data);
+
+        self::assertEquals("SELECT * FROM `table` WHERE id = :id AND email LIKE :email;", (string) self::$select);
+    }
+
     public function dataValues(): array
     {
         return [

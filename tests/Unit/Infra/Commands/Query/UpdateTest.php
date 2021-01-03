@@ -44,12 +44,20 @@ class UpdateTest extends TestCase
 
     public function testCanPassWhereValues(): void
     {
-        $data = [
-            "name" => "Jhon Doe"
-        ];
-        self::$update->setData($data)->where("name", "Jhon Doe");
+        self::$update->where("name", "Jhon Doe");
 
         self::assertEquals("UPDATE `table` SET `name` = :name AND `active` = :active;", (string) self::$update);
+    }
+
+    public function testCanReceiveDataAndWheres(): void
+    {
+        $data = [
+            "name" => "Jhon Doe",
+            "active" => 1
+        ];
+        self::$update->setData($data)->where("id", 1);
+
+        self::assertEquals("UPDATE `table` SET `name` = :name AND `active` = :active WHERE id = :id;", (string) self::$update);
     }
 
     /**

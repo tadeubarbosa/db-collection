@@ -2,6 +2,8 @@
 
 namespace DBCollection\Infra\Commands\Query;
 
+use Closure;
+
 class SelectBase
 {
     use QueryData;

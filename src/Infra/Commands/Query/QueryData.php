@@ -7,6 +7,8 @@ use InvalidArgumentException;
 
 trait QueryData
 {
+    use QueryWhere;
+
     /** @var array */
     private $data;
 
@@ -56,15 +58,10 @@ trait QueryData
         }, $this->data);
     }
 
-    public function where(string $param, $value = null): self
-    {
-        return $this;
-    }
-
-    protected function getDataFormatted(): string
+    protected function getDataFormatted(): ?string
     {
         if (empty($this->data)) {
-            return "";
+            return null;
         }
 
         $response = " WHERE ";

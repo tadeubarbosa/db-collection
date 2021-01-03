@@ -12,6 +12,8 @@ class Select extends SelectBase implements QueryOperator
         $where = $this->getDataFormatted();
         $limit = $this->getLimit();
 
+        $where = $where ?: $this->getWhereData();
+
         return "SELECT {$columns} FROM `{$this->table}`{$where}{$limit};";
     }
 
