@@ -15,6 +15,18 @@ class Query
     /**
      * @param null $data
      * @param null $values
+     * @return Insert
+     */
+    public function insert($data = null, $values = null): Insert
+    {
+        $operator = new Insert($this->table);
+
+        return $operator->setData($data, $values);
+    }
+
+    /**
+     * @param null $data
+     * @param null $values
      * @return Select
      */
     public function find($data = null, $values = null): Select
