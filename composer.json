@@ -1,0 +1,28 @@
+{
+    "name": "tadeubarbosa/db-collection",
+    "description": "A simple and useful lib to help with database management",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Tadeu Barbosa",
+            "email": "tadeufbarbosa@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "DBCollection\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DBCollection\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
