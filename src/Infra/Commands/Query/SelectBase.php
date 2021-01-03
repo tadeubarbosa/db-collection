@@ -52,4 +52,25 @@ class SelectBase
 
         return " LIMIT {$start},{$end}";
     }
+
+    protected static function dataFilterForQueryData(array $data): array
+    {
+        return array_filter($data, self::filterDataBeforeSet());
+    }
+
+    protected static function filterDataBeforeSet(): Closure
+    {
+        return static function ($params) {
+            if (is_string($params)) {
+                return false;
+            }
+            if (count($params) < 2) {
+                return false;
+            }
+            if (count($params) === 2 && in_array($params[1], ["like", "LIKE"], true)) {
+                return false;
+            }
+            return true;
+        };
+    }
 }

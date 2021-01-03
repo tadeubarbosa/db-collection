@@ -24,7 +24,7 @@ trait QueryData
             throw new InvalidArgumentException("You must pass some values to data parameters.");
         }
 
-        $data = array_filter($data, $this->filterDataBeforeSet());
+        $data = $this->dataFilterForQueryData($data);
 
         if (count($data) === 0) {
             throw new InvalidArgumentException("The data values is invalid.");
@@ -32,22 +32,6 @@ trait QueryData
 
         $this->data = $data;
         return $this;
-    }
-
-    private function filterDataBeforeSet(): Closure
-    {
-        return static function ($params) {
-            if (is_string($params)) {
-                return false;
-            }
-            if (count($params) < 2) {
-                return false;
-            }
-            if (count($params) === 2 && in_array($params[1], ["like", "LIKE"], true)) {
-                return false;
-            }
-            return true;
-        };
     }
 
     public function data(): array
@@ -70,6 +54,11 @@ trait QueryData
 
             return [":{$name}", $value];
         }, $this->data);
+    }
+
+    public function where(string $param, $value = null): self
+    {
+        return $this;
     }
 
     protected function getDataFormatted(): string
@@ -119,5 +108,10 @@ trait QueryData
         if (is_string($data) && $values === null) {
             throw new QueryArgumentNull("You must pass value to `find` method before try find some values.");
         }
+    }
+
+    protected function dataFilterForQueryData(array $data): array
+    {
+        return $data;
     }
 }
