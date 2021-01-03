@@ -31,18 +31,7 @@ class Select implements QueryOperator
             throw new InvalidArgumentException("You must pass some values to data parameters.");
         }
 
-        $data = array_filter($data, static function ($params) {
-            if (is_string($params)) {
-                return false;
-            }
-            if (count($params) < 2) {
-                return false;
-            }
-            if (count($params) === 2 && in_array($params[1], ["like", "LIKE"], true)) {
-                return false;
-            }
-            return true;
-        });
+        $data = array_filter($data, $this->filterDataBeforeSet());
 
         if (count($data) === 0) {
             throw new InvalidArgumentException("The data values is invalid.");
@@ -156,6 +145,25 @@ class Select implements QueryOperator
             $operator = $operator==="like"? "LIKE": $operator;
 
             return "{$name} {$operator} :{$name}";
+        };
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function filterDataBeforeSet(): \Closure
+    {
+        return static function ($params) {
+            if (is_string($params)) {
+                return false;
+            }
+            if (count($params) < 2) {
+                return false;
+            }
+            if (count($params) === 2 && in_array($params[1], ["like", "LIKE"], true)) {
+                return false;
+            }
+            return true;
         };
     }
 }
